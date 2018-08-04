@@ -4,33 +4,30 @@ import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
 
-from .nac import NAC
+from .nac import NeuralAccumulatorCell
 from torch.nn.parameter import Parameter
 
 
-class NALU(nn.Module):
-    """A Neural Arithmetic Logic Unit [1].
-
-    NALU uses 2 NACs with tied weights to support
-    multiplicative extrapolation.
+class NeuralArithmeticLogicUnitCell(nn.Module):
+    """A Neural Arithmetic Logic Unit (NALU) cell [1].
 
     Attributes:
-        in_features: size of the input sample.
-        out_features: size of the output sample.
+        in_dim: size of the input sample.
+        out_dim: size of the output sample.
 
     Sources:
         [1]: https://arxiv.org/abs/1808.00508
     """
-    def __init__(self, in_features, out_features):
+    def __init__(self, in_dim, out_dim):
         super().__init__()
-        self.in_features = in_features
-        self.out_features = out_features
+        self.in_dim = in_dim
+        self.out_dim = out_dim
         self.eps = 1e-10
 
-        self.G = Parameter(torch.Tensor(out_features, in_features))
-        self.W = Parameter(torch.Tensor(out_features, in_features))
+        self.G = Parameter(torch.Tensor(out_dim, in_dim))
+        self.W = Parameter(torch.Tensor(out_dim, in_dim))
         self.register_parameter('bias', None)
-        self.nac = NAC(in_features, out_features)
+        self.nac = NeuralAccumulatorCell(in_dim, out_dim)
 
         init.kaiming_uniform_(self.G, a=math.sqrt(5))
         init.kaiming_uniform_(self.W, a=math.sqrt(5))
@@ -46,6 +43,37 @@ class NALU(nn.Module):
         return y
 
     def extra_repr(self):
-        return 'in_features={}, out_features={}'.format(
-            self.in_features, self.out_features
+        return 'in_dim={}, out_dim={}'.format(
+            self.in_dim, self.out_dim
         )
+
+
+class NALU(nn.Module):
+    """A stack of NAC layers.
+
+    Attributes:
+        num_layers: the number of NAC layers.
+        in_dim: the size of the input sample.
+        hidden_dim: the size of the hidden layers.
+        out_dim: the size of the output.
+    """
+    def __init__(self, num_layers, in_dim, hidden_dim, out_dim):
+        super().__init__()
+        self.num_layers = num_layers
+        self.in_dim = in_dim
+        self.hidden_dim = hidden_dim
+        self.out_dim = out_dim
+
+        layers = []
+        for i in range(num_layers):
+            layers.append(
+                NeuralArithmeticLogicUnitCell(
+                    hidden_dim if i > 0 else in_dim,
+                    hidden_dim if i < num_layers - 1 else out_dim,
+                )
+            )
+        self.model = nn.Sequential(*layers)
+
+    def forward(self, x):
+        out = self.model(x)
+        return out

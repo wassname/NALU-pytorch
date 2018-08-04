@@ -57,7 +57,7 @@ def main():
         print("Working with {}...".format(non_lin))
         mses = []
         for i in range(100):
-            net = MLP(non_lin)
+            net = MLP(4, 1, 8, 1, non_lin)
             optim = torch.optim.Adam(net.parameters(), lr=LEARNING_RATE)
             train(net, optim, train_data, NUM_ITERS)
             mses.append(test(net, test_data))

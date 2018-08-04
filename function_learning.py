@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models import MultiLayerNet, MultiLayerNAC, MultiLayerNALU
+from models import MLP, NAC, NALU
 
 NORMALIZE = True
 NUM_LAYERS = 2
@@ -68,27 +68,27 @@ def main():
     save_dir = './results/'
 
     models = [
-        MultiLayerNet(
-            'relu6',
+        MLP(
             num_layers=NUM_LAYERS,
             in_dim=2,
             hidden_dim=HIDDEN_DIM,
-            out_dim=1
+            out_dim=1,
+            activation='relu6',
         ),
-        MultiLayerNet(
-            'none',
+        MLP(
             num_layers=NUM_LAYERS,
             in_dim=2,
             hidden_dim=HIDDEN_DIM,
-            out_dim=1
+            out_dim=1,
+            activation='none',
         ),
-        MultiLayerNAC(
+        NAC(
             num_layers=NUM_LAYERS,
             in_dim=2,
             hidden_dim=HIDDEN_DIM,
-            out_dim=1
+            out_dim=1,
         ),
-        MultiLayerNALU(
+        NALU(
             num_layers=NUM_LAYERS,
             in_dim=2,
             hidden_dim=HIDDEN_DIM,
@@ -110,9 +110,10 @@ def main():
         # random model
         random_mse = []
         for i in range(100):
-            net = MultiLayerNet(
-                'relu6', num_layers=NUM_LAYERS,
-                in_dim=2, hidden_dim=HIDDEN_DIM, out_dim=1
+            net = MLP(
+                num_layers=NUM_LAYERS, in_dim=2,
+                hidden_dim=HIDDEN_DIM, out_dim=1,
+                activation='relu6',
             )
             mse = test(net, X_test, y_test)
             random_mse.append(mse.mean().item())
