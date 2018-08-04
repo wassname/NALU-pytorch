@@ -1,41 +1,13 @@
 import math
 import torch.nn as nn
 
+from .utils import str2act
+
 
 class MLP(nn.Module):
     def __init__(self, activation, input_dim=1, encoding_dim=8):
         super().__init__()
-
-        if activation is 'hardtanh':
-            self.activation = nn.Hardtanh()
-        elif activation is 'sigmoid':
-            self.activation = nn.Sigmoid()
-        elif activation is 'relu6':
-            self.activation = nn.ReLU6()
-        elif activation is 'tanh':
-            self.activation = nn.Tanh()
-        elif activation is 'tanhshrink':
-            self.activation = nn.Tanhshrink()
-        elif activation is 'hardshrink':
-            self.activation = nn.Hardshrink()
-        elif activation is 'leakyrelu':
-            self.activation = nn.LeakyReLU()
-        elif activation is 'softshrink':
-            self.activation = nn.Softshrink()
-        elif activation is 'softsign':
-            self.activation = nn.Softsign()
-        elif activation is 'relu':
-            self.activation = nn.ReLU()
-        elif activation is 'prelu':
-            self.activation = nn.PReLU()
-        elif activation is 'softplus':
-            self.activation = nn.Softplus()
-        elif activation is 'elu':
-            self.activation = nn.ELU()
-        elif activation is 'selu':
-            self.activation = nn.SELU()
-        else:
-            raise ValueError("[!] Invalid activation function.")
+        self.activation = str2act(activation)
 
         self.i2h = nn.Linear(input_dim, encoding_dim)
         self.h2h1 = nn.Linear(encoding_dim, encoding_dim)

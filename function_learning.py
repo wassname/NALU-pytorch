@@ -13,7 +13,7 @@ NORMALIZE = True
 NUM_LAYERS = 2
 HIDDEN_DIM = 2
 LEARNING_RATE = 1e-3
-NUM_ITERS = int(7e4)
+NUM_ITERS = int(1e5)
 RANGE = [5, 10]
 ARITHMETIC_FUNCTIONS = {
     'add': lambda x, y: x + y,
@@ -120,7 +120,7 @@ def main():
 
         # others
         for net in models:
-            optim = torch.optim.Adam(net.parameters(), lr=LEARNING_RATE)
+            optim = torch.optim.RMSprop(net.parameters(), lr=LEARNING_RATE)
             train(net, optim, X_train, y_train, NUM_ITERS)
             mse = test(net, X_test, y_test).mean().item()
             results[fn_str].append(mse)

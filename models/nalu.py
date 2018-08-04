@@ -29,6 +29,7 @@ class NALU(nn.Module):
 
         self.G = Parameter(torch.Tensor(out_features, in_features))
         self.W = Parameter(torch.Tensor(out_features, in_features))
+        self.register_parameter('bias', None)
         self.nac = NAC(in_features, out_features)
 
         init.kaiming_uniform_(self.G, a=math.sqrt(5))
@@ -36,10 +37,10 @@ class NALU(nn.Module):
 
     def forward(self, input):
         a = self.nac(input)
-        g = F.sigmoid(F.linear(input, self.G, None))
+        g = F.sigmoid(F.linear(input, self.G, self.bias))
         add_sub = g * a
         log_input = torch.log(torch.abs(input) + self.eps)
-        m = torch.exp(F.linear(log_input, self.W, None))
+        m = torch.exp(F.linear(log_input, self.W, self.bias))
         mul_div = (1 - g) * m
         y = add_sub + mul_div
         return y

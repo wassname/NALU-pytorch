@@ -4,6 +4,7 @@ import torch.nn as nn
 
 from .nac import NAC
 from .nalu import NALU
+from .utils import str2act
 
 
 class MultiLayerNet(nn.Module):
@@ -13,40 +14,7 @@ class MultiLayerNet(nn.Module):
         self.in_dim = in_dim
         self.hidden_dim = hidden_dim
         self.out_dim = out_dim
-
-        if activation is 'none':
-            self.activation = None
-        elif activation is 'hardtanh':
-            self.activation = nn.Hardtanh()
-        elif activation is 'sigmoid':
-            self.activation = nn.Sigmoid()
-        elif activation is 'relu6':
-            self.activation = nn.ReLU6()
-        elif activation is 'tanh':
-            self.activation = nn.Tanh()
-        elif activation is 'tanhshrink':
-            self.activation = nn.Tanhshrink()
-        elif activation is 'hardshrink':
-            self.activation = nn.Hardshrink()
-        elif activation is 'leakyrelu':
-            self.activation = nn.LeakyReLU()
-        elif activation is 'softshrink':
-            self.activation = nn.Softshrink()
-        elif activation is 'softsign':
-            self.activation = nn.Softsign()
-        elif activation is 'relu':
-            self.activation = nn.ReLU()
-        elif activation is 'prelu':
-            self.activation = nn.PReLU()
-        elif activation is 'softplus':
-            self.activation = nn.Softplus()
-        elif activation is 'elu':
-            self.activation = nn.ELU()
-        elif activation is 'selu':
-            self.activation = nn.SELU()
-        else:
-            raise ValueError("[!] Invalid activation function.")
-
+        self.activation = str2act(activation)
 
         layers = []
         if self.activation is not None:
