@@ -14,12 +14,12 @@ This is a PyTorch implementation of [Neural Arithmetic Logic Units](https://arxi
 from models import *
 
 # single layer modules
-NAC(in_features, out_features)
-NALU(in_features, out_features)
+NeuralAccumulatorCell(in_dim, out_dim)
+NeuralArithmeticLogicUnitCell(in_dim, out_dim)
 
 # stacked layers
-MultiLayerNAC(num_layers, in_dim, hidden_dim, out_dim)
-MultiLayerNALU(num_layers, in_dim, hidden_dim, out_dim)
+NAC(num_layers, in_dim, hidden_dim, out_dim)
+NALU(num_layers, in_dim, hidden_dim, out_dim)
 ```
 
 ## Experiments
