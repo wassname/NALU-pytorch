@@ -58,7 +58,7 @@ def main():
         mses = []
         for i in range(100):
             net = MLP(4, 1, 8, 1, non_lin)
-            optim = torch.optim.Adam(net.parameters(), lr=LEARNING_RATE)
+            optim = torch.optim.RMSprop(net.parameters(), lr=LEARNING_RATE)
             train(net, optim, train_data, NUM_ITERS)
             mses.append(test(net, test_data))
         all_mses.append(torch.cat(mses, dim=1).mean(dim=1))
