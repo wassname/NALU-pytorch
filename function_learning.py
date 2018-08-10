@@ -1,13 +1,14 @@
 import math
 import random
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models import MLP, NAC, NALU
+from models import MLP, NAC, NALU, NALU_sinh, NAC_exact
 
 NORMALIZE = True
 NUM_LAYERS = 2
@@ -68,6 +69,18 @@ def main():
     save_dir = './results/'
 
     models = [
+        NAC_exact(
+            num_layers=NUM_LAYERS,
+            in_dim=2,
+            hidden_dim=HIDDEN_DIM,
+            out_dim=1,
+        ),
+        NALU_sinh(
+            num_layers=NUM_LAYERS,
+            in_dim=2,
+            hidden_dim=HIDDEN_DIM,
+            out_dim=1
+        ),
         MLP(
             num_layers=NUM_LAYERS,
             in_dim=2,
@@ -99,6 +112,7 @@ def main():
     results = {}
     for fn_str, fn in ARITHMETIC_FUNCTIONS.items():
         results[fn_str] = []
+        print("running", fn_str)
 
         # dataset
         X_train, y_train, X_test, y_test = generate_data(
@@ -125,16 +139,17 @@ def main():
             train(net, optim, X_train, y_train, NUM_ITERS)
             mse = test(net, X_test, y_test).mean().item()
             results[fn_str].append(mse)
+        print("mse", mse)
 
     with open(save_dir + "interpolation.txt", "w") as f:
-        f.write("Relu6\tNone\tNAC\tNALU\n")
+        f.write("NAC_exact\tNALU_sinh\tRelu6\tNone\tNAC\tNALU\n")
         for k, v in results.items():
             rand = results[k][0]
-            mses = [100.0*x/rand for x in results[k][1:]]
+            mses = [100.0 * x / rand for x in results[k][1:]]
             if NORMALIZE:
-                f.write("{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\n".format(*mses))
+                f.write(("\t".join(["{:.3f}"]*len(mses))+"\n").format(*mses))
             else:
-                f.write("{:.3f}\t{:.3f}\t{:.3f}\t{:.3f}\n".format(*results[k][1:]))
+                f.write(("\t".join(["{:.3f}"]*len(mses))+"\n").format(*results[k][1:]))
 
 
 if __name__ == '__main__':

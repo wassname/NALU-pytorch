@@ -1,3 +1,18 @@
+Comparing Neural Arithmetic Logic Units with exact and asinh versions.
+
+
+|         | NAC_exact | NALU_sinh | Relu6  | None  | NAC   | NALU   |
+| :------ | :-------- | :-------- | :----- | :---- | :---- | :----- |
+| a + b   | 0.133     | 0.530     | 3.846  | 0.140 | 0.155 | 0.139  |
+| a - b   | 3.642     | 5.513     | 87.524 | 1.774 | 0.986 | 10.864 |
+| a * b   | 1.525     | 0.444     | 4.082  | 0.319 | 2.889 | 2.139  |
+| a / b   | 0.266     | 0.796     | 4.337  | 0.341 | 2.002 | 1.547  |
+| a ^ 2   | 1.127     | 1.100     | 92.235 | 0.763 | 4.867 | 0.852  |
+| sqrt(a) | 0.951     | 0.798     | 85.603 | 0.549 | 4.589 | 0.511  |
+
+
+
+
 # Neural Arithmetic Logic Units
 
 [WIP]
@@ -43,6 +58,8 @@ python function_learning.py
 ```
 This should generate a text file called `interpolation.txt` with the following results. (Currently only supports interpolation, I'm working on the rest)
 
+
+
 |         | Relu6    | None     | NAC      | NALU   |
 |---------|----------|----------|----------|--------|
 | a + b   | 4.472    | 0.132    | 0.154    | 0.157  |
@@ -51,3 +68,4 @@ This should generate a text file called `interpolation.txt` with the following r
 | a / b   | 97.070   | 60.594   | 5.730    | 3.042  |
 | a ^ 2   | 89.987   | 2.977    | 4.718    | 1.117  |
 | sqrt(a) | 5.939    | 40.243   | 7.263    | 1.119  |
+
