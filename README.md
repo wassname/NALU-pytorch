@@ -1,4 +1,4 @@
-Comparing Neural Arithmetic Logic Units with exact and asinh versions.
+Quick experiment: What if we used asinh instead of log in Neural Arithmetic Logic Units? Idea from [reddit user fdskjfdskhfkjds](https://www.reddit.com/r/MachineLearning/comments/94833t/neural_arithmetic_logic_units/e3u974x/)
 
 
 |         | NAC_exact | NALU_sinh | Relu6  | None  | NAC   | NALU   |
@@ -10,7 +10,7 @@ Comparing Neural Arithmetic Logic Units with exact and asinh versions.
 | a ^ 2   | 1.127     | 1.100     | 92.235 | 0.763 | 4.867 | 0.852  |
 | sqrt(a) | 0.951     | 0.798     | 85.603 | 0.549 | 4.589 | 0.511  |
 
-
+It appears that NALU_sinh is better at division than NALU.
 
 
 # Neural Arithmetic Logic Units
